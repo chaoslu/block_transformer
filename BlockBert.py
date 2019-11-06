@@ -280,8 +280,8 @@ class BlockBertModel(object):
 						attention_probs_dropout_prob=0.1,
 						initializer_range=0.02,
 						do_return_all_layers=True,
-						gaussian_prior_factor=gaussian_prior_factor,
-						gaussian_prior_bias=gaussian_prior_bias):
+						gaussian_prior_factor=config.gaussian_prior_factor,
+						gaussian_prior_bias=config.gaussian_prior_bias)
 
 			self.interaction_output_p = self.all_interaction_layers_p[-1]
 			self.interaction_output_h = self.all_interaction_layers_h[-1]
