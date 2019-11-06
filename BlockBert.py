@@ -174,7 +174,7 @@ class BlockBertModel(object):
 		with tf.variable_scope(scope, default_name="bert"):
 			with tf.variable_scope("embeddings"):
 				# Perform embedding lookup on the word ids.
-				(self.premise_embedding_output self.hypothesis_embedding_output,self.embedding_table) = embedding_lookup(
+				(self.premise_embedding_output,self.hypothesis_embedding_output,self.embedding_table) = embedding_lookup(
 						premise_input_ids=premise_input_ids,
 						hypothesis_input_ids=hypothesis_input_ids,
 						premise_input_chars_ids=premise_input_chars_ids,
