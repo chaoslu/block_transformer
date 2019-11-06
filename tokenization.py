@@ -170,7 +170,7 @@ def whitespace_tokenize(text):
 class FullTokenizer(object):
 	"""Runs end-to-end tokenziation."""
 
-	def __init__(self, vocab_file, chars_vocab_file=None, do_lower_case=True, use_pretraining=False):
+	def __init__(self, vocab_file, chars_vocab_file, do_lower_case=True, use_pretraining=False):
 		if use_pretraining:
 			vocabulary = load_vocab_pretrained(vocab_file)
 		else:
