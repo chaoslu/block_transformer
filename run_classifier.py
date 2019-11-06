@@ -966,8 +966,6 @@ def main(_):
 
 	processors = {
 			"diagnostic": DiagProcessor,
-			"cola": ColaProcessor,
-			"sst" : SstProcessor,
 			"mnli": MnliProcessor,
 			"snli": SnliProcessor,
 			"qnli": BiNliProcessor,
