@@ -579,8 +579,8 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
 
 	tokens_a = tokenizer.tokenize(example.text_a)
 	tokens_b = tokenizer.tokenize(example.text_b)
-	_truncate_seq_pair(tokens_a, max_seq_length)
-	_truncate_seq_pair(tokens_b, max_seq_length)
+	_truncate_seq(tokens_a, max_seq_length)
+	_truncate_seq(tokens_b, max_seq_length)
 	
 
 	input_ids_a = tokenizer.convert_tokens_to_ids(tokens_a)
