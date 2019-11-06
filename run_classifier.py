@@ -343,7 +343,7 @@ class SnliProcessor(DataProcessor):
 
 			if i == 0:
 				continue
-			guid = "%s-%s" % (set_type, tokenization.convert_to_unicode(line[0]))
+			guid = "%s" % (tokenization.convert_to_unicode(line[0]))
 			text_a = tokenization.convert_to_unicode(line[7])
 			text_b = tokenization.convert_to_unicode(line[8])
 			label = tokenization.convert_to_unicode(line[-1])
