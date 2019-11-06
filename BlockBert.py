@@ -264,7 +264,7 @@ class BlockBertModel(object):
 						initializer_range=config.initializer_range,
 						dropout_prob=config.hidden_dropout_prob)
 
-			(self.all_interaction_layers_p, self.all_interaction_layers_h, self.inter_attetnion_scores_p
+			(self.all_interaction_layers_p, self.all_interaction_layers_h, self.inter_attetnion_scores_p,
 				self.inter_attetnion_scores_h) = interaction_transformer_model(
 						premise_input_tensor=self.interaction_input_p,
 						hypothesis_input_tensor=self.interaction_input_h,
