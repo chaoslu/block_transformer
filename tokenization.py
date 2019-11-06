@@ -172,9 +172,9 @@ class FullTokenizer(object):
 
 	def __init__(self, vocab_file, chars_vocab_file=None, do_lower_case=True, use_pretraining=False):
 		if use_pretraining:
-			vocabulary = load_vocab(vocab_file)
-		else:
 			vocabulary = load_vocab_pretrained(vocab_file)
+		else:
+			vocabulary = load_vocab(vocab_file)
 
 		self.vocab = vocabulary
 		self.inv_vocab = {v: k for k, v in self.vocab.items()}
