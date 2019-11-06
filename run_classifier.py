@@ -734,7 +734,7 @@ def file_based_input_fn_builder(input_file, seq_length, is_training,
 
 def _truncate_seq(tokens, max_length):
 	"""Truncates a sequence in place to the maximum length."""
-	while len(tokens) <= max_length:
+	while len(tokens) > max_length:
 		tokens.pop()
 
 
