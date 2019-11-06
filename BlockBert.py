@@ -1109,7 +1109,7 @@ def attention_sublayer(from_tensor,
 def ffn_sublayer(input_tensor,
 				layer_idx,
 				intermediate_size=3072,
-				intermediate_act_fn=relu,
+				intermediate_act_fn=tf.nn.relu,
 				initializer_range=0.02,
 				hidden_size=768,
 				hidden_dropout_prob=0.1):
