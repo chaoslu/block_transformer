@@ -338,7 +338,7 @@ class SnliProcessor(DataProcessor):
 		examples = []
 		for (i, line) in enumerate(lines):
 			# when there is no golden label, the pair should be excluded.
-			if line[-1] == "-"
+			if line[-1] == "-":
 				continue
 
 			if i == 0:
