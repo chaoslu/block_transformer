@@ -291,7 +291,7 @@ class BlockBertModel(object):
 						hypothesis_output=self.inter_attention_output_h,
 						premise_input_tensor=self.interaction_input_p,
 						hypothesis_input_tensor=self.interaction_input_h,
-						initializer_range=0.02):
+						initializer_range=0.02)
 			# The "pooler" converts the encoded sequence tensor of shape
 			# [batch_size, seq_length, hidden_size] to a tensor of shape
 			# [batch_size, hidden_size]. This is necessary for segment-level
