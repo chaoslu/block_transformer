@@ -1370,7 +1370,7 @@ def interaction_transformer_model(premise_input_tensor,
 	# the GPU/CPU but may not be free on the TPU, so we want to minimize them to
 	# help the optimizer.
 	prev_output_premise = reshape_to_matrix(premise_input_tensor)
-	prev_output_hypothesis = reshape_to_matrix(prev_output_hypothesis)
+	prev_output_hypothesis = reshape_to_matrix(hypothesis_input_tensor)
 
 	attention_mask_premise = attention_mask[0]
 	attention_mask_hypothesis = attention_mask[1]
