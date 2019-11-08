@@ -246,8 +246,8 @@ class BlockBertModel(object):
 						attention_probs_dropout_prob=config.attention_probs_dropout_prob,
 						initializer_range=config.initializer_range,
 						do_return_all_layers=True,
-						gaussian_prior_factor=gaussian_prior_factor,
-						gaussian_prior_bias=gaussian_prior_bias)
+						gaussian_prior_factor=config.gaussian_prior_factor,
+						gaussian_prior_bias=config.gaussian_prior_bias)
 
 			self.encoder_output_p = self.all_encoder_layers_p[-1]
 			self.encoder_output_h = self.all_encoder_layers_h[-1]
