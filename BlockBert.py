@@ -631,6 +631,11 @@ def embedding_lookup(premise_input_ids,
 
 		#enlarge embedding size for output reshape
 		embedding_size += chars_embedding_size
+	
+	else:
+		output_p = word_output_p
+		output_h = word_output_h
+
 
 	input_shape = get_shape_list(premise_input_ids)
 
