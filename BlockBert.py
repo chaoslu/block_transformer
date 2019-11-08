@@ -1531,8 +1531,8 @@ def comparison_layer(premise_output,
 	seq_length = input_shape[1]
 	hidden_size = input_shape[2]
 	
-	premise = tf.concat(premise_input_tensor,premise_output,-1)
-	hypothesis = tf.concat(hypothesis_input_tensor,hypothesis_output,-1)
+	premise = tf.concat(premise_input_tensor,premise_output,axis=-1)
+	hypothesis = tf.concat(hypothesis_input_tensor,hypothesis_output,axis=-1)
 
 	premise = tf.layers.dense(premise,hidden_size,activation=tf.nn.relu,kernel_initializer=create_initializer(initializer_range))
 	premise = tf.layers.dense(premise,hidden_size,kernel_initializer=create_initializer(initializer_range))
@@ -1542,7 +1542,7 @@ def comparison_layer(premise_output,
 	hypothesis = tf.layers.dense(hypothesis,hidden_size,kernel_initializer=create_initializer(initializer_range))
 	hypothesis = tf.multiply(tf.reduce_sum(hypothesis,axis=1),1.0/math.sqrt(float(seq_length)))
 
-	comparison_result = tf.concat(premise,hypothesis,-1)
+	comparison_result = tf.concat(premise,hypothesis,axis=-1)
 	comparison_result = tf.layers.dense(comparison_result,hidden_size,activation=tf.nn.relu,kernel_initializer=create_initializer(initializer_range))
 	comparison_result = tf.layers.dense(comparison_result,3,kernel_initializer=create_initializer(initializer_range))
 	#comparison_result = tf.nn.softmax(comparison_result)
