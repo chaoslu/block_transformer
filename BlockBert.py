@@ -1514,12 +1514,12 @@ def interaction_transformer_model(premise_input_tensor,
 		for layer_output in all_layer_outputs_hypothesis:
 			final_output_h = reshape_from_matrix(layer_output, input_shape)
 			final_outputs_h.append(final_output_h)
-		return (final_outputs_p,final_outputs_h)
+		return (final_outputs_p,final_outputs_h,all_layer_attentions_premise,all_layer_attentions_hypothesis)
 	
 	else:
 		final_output_p = reshape_from_matrix(prev_output_premise, input_shape)
 		final_output_h = reshape_from_matrix(prev_output_hypothesis, input_shape)
-		return (final_output_p,final_output_h,all_layer_attentions_premise,all_layer_outputs_hypothesis)
+		return (final_output_p,final_output_h,all_layer_attentions_premise,all_layer_attentions_hypothesis)
 
 
 def comparison_layer(premise_output,
