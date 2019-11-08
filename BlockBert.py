@@ -1471,7 +1471,7 @@ def interaction_transformer_model(premise_input_tensor,
 
 
 			# The activation is only applied to the "intermediate" hidden layer.
-			with tf.variable_scope("ffn"):
+			with tf.variable_scope("ffn_p"):
 				premise_layer_output = ffn_sublayer(
 							layer_idx=layer_idx,
 							input_tensor=inter_attention_output_p,
@@ -1482,7 +1482,7 @@ def interaction_transformer_model(premise_input_tensor,
 							hidden_dropout_prob=hidden_dropout_prob)
 
 			# The activation is only applied to the "intermediate" hidden layer.
-			with tf.variable_scope("ffn"):
+			with tf.variable_scope("ffn_h"):
 				hypothesis_layer_output = ffn_sublayer(
 							layer_idx=layer_idx,
 							input_tensor=inter_attention_output_h,
