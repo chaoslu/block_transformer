@@ -752,8 +752,8 @@ def attention_layer(from_tensor,
 					batch_size=None,
 					from_seq_length=None,
 					to_seq_length=None,
-					gaussian_prior_factor=gaussian_prior_factor,
-					gaussian_prior_bias=gaussian_prior_bias):
+					gaussian_prior_factor=0.1,
+					gaussian_prior_bias=0.1):
 	"""Performs multi-headed attention from `from_tensor` to `to_tensor`.
 
 	This is an implementation of multi-headed attention based on "Attention
