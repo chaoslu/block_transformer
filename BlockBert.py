@@ -192,17 +192,18 @@ class BlockBertModel(object):
 
 				# Add positional embeddings and token type embeddings, then layer
 				# normalize and perform dropout.
-				self.premise_embedding_output = embedding_position_processor(
-						input_tensor=self.premise_embedding_output,
-						position_embedding_name="position_embeddings",
-						initializer_range=config.initializer_range,
-						dropout_prob=config.hidden_dropout_prob)
-
-				self.hypothesis_embedding_output = embedding_position_processor(
-						input_tensor=self.hypothesis_embedding_output,
-						position_embedding_name="position_embeddings",
-						initializer_range=config.initializer_range,
-						dropout_prob=config.hidden_dropout_prob)
+				with tf.variable_scope("premise"):
+					self.premise_embedding_output = embedding_position_processor(
+							input_tensor=self.premise_embedding_output,
+							position_embedding_name="position_embeddings",
+							initializer_range=config.initializer_range,
+							dropout_prob=config.hidden_dropout_prob)
+				with tf.variable_scope("hypothesis"):
+					self.hypothesis_embedding_output = embedding_position_processor(
+							input_tensor=self.hypothesis_embedding_output,
+							position_embedding_name="position_embeddings",
+							initializer_range=config.initializer_range,
+							dropout_prob=config.hidden_dropout_prob)
 
 			# This converts a 2D mask of shape [batch_size, seq_length] to a 3D
 			# mask of shape [batch_size, seq_length, seq_length] which is used
@@ -217,50 +218,54 @@ class BlockBertModel(object):
 				# `sequence_output` shape = [batch_size, seq_length, hidden_size].
 
 				# The encoding blocks, two streams of premise and hypothesis operated seperately
-				(self.all_encoder_layers_p, self.encoding_attention_scores_p) = encoding_transformer_model(
-						input_tensor=self.premise_embedding_output,
-						attention_mask=attention_mask_2p,
-						dependency_size=config.dependency_size,
-						hidden_size=config.hidden_size,
-						num_hidden_layers=config.num_encoding_layers,
-						num_attention_heads=config.num_attention_heads,
-						intermediate_size=config.intermediate_size,
-						intermediate_act_fn=get_activation(config.hidden_act),
-						hidden_dropout_prob=config.hidden_dropout_prob,
-						attention_probs_dropout_prob=config.attention_probs_dropout_prob,
-						initializer_range=config.initializer_range,
-						do_return_all_layers=True,
-						gaussian_prior_factor=config.gaussian_prior_factor,
-						gaussian_prior_bias=config.gaussian_prior_bias)
+				with tf.variable_scope("premise"):
+					(self.all_encoder_layers_p, self.encoding_attention_scores_p) = encoding_transformer_model(
+							input_tensor=self.premise_embedding_output,
+							attention_mask=attention_mask_2p,
+							dependency_size=config.dependency_size,
+							hidden_size=config.hidden_size,
+							num_hidden_layers=config.num_encoding_layers,
+							num_attention_heads=config.num_attention_heads,
+							intermediate_size=config.intermediate_size,
+							intermediate_act_fn=get_activation(config.hidden_act),
+							hidden_dropout_prob=config.hidden_dropout_prob,
+							attention_probs_dropout_prob=config.attention_probs_dropout_prob,
+							initializer_range=config.initializer_range,
+							do_return_all_layers=True,
+							gaussian_prior_factor=config.gaussian_prior_factor,
+							gaussian_prior_bias=config.gaussian_prior_bias)
 
-				(self.all_encoder_layers_h, self.encoding_attention_scores_h) = encoding_transformer_model(
-						input_tensor=self.hypothesis_embedding_output,
-						attention_mask=attention_mask_2h,
-						dependency_size=config.dependency_size,
-						hidden_size=config.hidden_size,
-						num_hidden_layers=config.num_encoding_layers,
-						num_attention_heads=config.num_attention_heads,
-						intermediate_size=config.intermediate_size,
-						intermediate_act_fn=get_activation(config.hidden_act),
-						hidden_dropout_prob=config.hidden_dropout_prob,
-						attention_probs_dropout_prob=config.attention_probs_dropout_prob,
-						initializer_range=config.initializer_range,
-						do_return_all_layers=True,
-						gaussian_prior_factor=config.gaussian_prior_factor,
-						gaussian_prior_bias=config.gaussian_prior_bias)
+				with tf.variable_scope("hypothesis"):
+					(self.all_encoder_layers_h, self.encoding_attention_scores_h) = encoding_transformer_model(
+							input_tensor=self.hypothesis_embedding_output,
+							attention_mask=attention_mask_2h,
+							dependency_size=config.dependency_size,
+							hidden_size=config.hidden_size,
+							num_hidden_layers=config.num_encoding_layers,
+							num_attention_heads=config.num_attention_heads,
+							intermediate_size=config.intermediate_size,
+							intermediate_act_fn=get_activation(config.hidden_act),
+							hidden_dropout_prob=config.hidden_dropout_prob,
+							attention_probs_dropout_prob=config.attention_probs_dropout_prob,
+							initializer_range=config.initializer_range,
+							do_return_all_layers=True,
+							gaussian_prior_factor=config.gaussian_prior_factor,
+							gaussian_prior_bias=config.gaussian_prior_bias)
 
 			self.encoder_output_p = self.all_encoder_layers_p[-1]
 			self.encoder_output_h = self.all_encoder_layers_h[-1]
 
 			with tf.variable_scope("interactor"):
 				# adding the positional encoding to encoder output
-				self.interaction_input_p = embedding_position_processor(
+				with tf.variable_scope("premise"):
+					self.interaction_input_p = embedding_position_processor(
 							input_tensor=self.encoder_output_p,
 							position_embedding_name="position_embeddings",
 							initializer_range=config.initializer_range,
 							dropout_prob=config.hidden_dropout_prob)
 
-				self.interaction_input_h = embedding_position_processor(
+				with tf.variable_scope("hypothesis"):
+					self.interaction_input_h = embedding_position_processor(
 							input_tensor=self.encoder_output_h,
 							position_embedding_name="position_embeddings",
 							initializer_range=config.initializer_range,
