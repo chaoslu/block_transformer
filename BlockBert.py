@@ -346,7 +346,7 @@ class BlockBertModel(object):
 		return self.key_filter
 
 	def get_attention_scores(self,name):
-		attention_dict = {"enc-h":self.all_encoder_layers_h,
+		attention_dict = {"enc-h":self.encoding_attention_scores_h,
 						  "enc-p":self.encoding_attention_scores_p,
 						  "inter-h":self.inter_attention_scores_h,
 						  "inter-p":self.inter_attetnion_scores_p}
@@ -579,7 +579,7 @@ def embedding_lookup(premise_input_ids,
 	#
 	# If the input is a 2D tensor of shape [batch_size, seq_length], we
 	# reshape to [batch_size, seq_length, 1].
-	if premise_input_ids.ndims == 2:
+	if premise_input_ids.shape.ndims == 2:
 		premise_input_ids = tf.expand_dims(premise_input_ids, axis=[-1])
 		hypothesis_input_ids = tf.expand_dims(hypothesis_input_ids, axis=[-1])
 		premise_input_chars_ids = tf.expand_dims(premise_input_chars_ids, axis=[-1])
