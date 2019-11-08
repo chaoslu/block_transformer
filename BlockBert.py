@@ -751,7 +751,9 @@ def attention_layer(from_tensor,
 					do_return_2d_tensor=False,
 					batch_size=None,
 					from_seq_length=None,
-					to_seq_length=None):
+					to_seq_length=None,
+					gaussian_prior_factor=gaussian_prior_factor,
+					gaussian_prior_bias=gaussian_prior_bias):
 	"""Performs multi-headed attention from `from_tensor` to `to_tensor`.
 
 	This is an implementation of multi-headed attention based on "Attention
@@ -1116,10 +1118,10 @@ def attention_sublayer(from_tensor,
 
 def ffn_sublayer(input_tensor,
 				layer_idx,
-				intermediate_size=3072,
+				intermediate_size=120,
 				intermediate_act_fn=tf.nn.relu,
 				initializer_range=0.02,
-				hidden_size=768,
+				hidden_size=120,
 				hidden_dropout_prob=0.1):
 	# The activation is only applied to the "intermediate" hidden layer.
 	with tf.variable_scope("layer_%d/intermediate" % layer_idx):
