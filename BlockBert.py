@@ -629,8 +629,8 @@ def embedding_lookup(premise_input_ids,
 		chars_output_p,chars_output_h = transform_to_dense(flat_input_chars_ids_p,flat_input_chars_ids_h,
 										chars_embedding_table,chars_vocab_size,use_one_hot_embeddings)
 		# concatenate word representation and character representation
-		output_p = tf.concat(word_output_p, chars_output_p, axis=1)
-		output_h = tf.concat(word_output_h, chars_output_h, axis=1)
+		output_p = tf.concat([word_output_p, chars_output_p], axis=1)
+		output_h = tf.concat([word_output_h, chars_output_h], axis=1)
 
 		#enlarge embedding size for output reshape
 		embedding_size += chars_embedding_size
@@ -1531,8 +1531,8 @@ def comparison_layer(premise_output,
 	seq_length = input_shape[1]
 	hidden_size = input_shape[2]
 	
-	premise = tf.concat(premise_output,premise_input_tensor)
-	hypothesis = tf.concat(hypothesis_input_tensor,hypothesis_output)
+	premise = tf.concat([premise_output,premise_input_tensor],axis=-1)
+	hypothesis = tf.concat([hypothesis_input_tensor,hypothesis_output],axis=-1)
 
 	premise = tf.layers.dense(premise,hidden_size,activation=tf.nn.relu,kernel_initializer=create_initializer(initializer_range))
 	premise = tf.layers.dense(premise,hidden_size,kernel_initializer=create_initializer(initializer_range))
@@ -1542,7 +1542,7 @@ def comparison_layer(premise_output,
 	hypothesis = tf.layers.dense(hypothesis,hidden_size,kernel_initializer=create_initializer(initializer_range))
 	hypothesis = tf.multiply(tf.reduce_sum(hypothesis,axis=1),1.0/math.sqrt(float(seq_length)))
 
-	comparison_result = tf.concat(premise,hypothesis,axis=1)
+	comparison_result = tf.concat([premise,hypothesis],axis=-1)
 	comparison_result = tf.layers.dense(comparison_result,hidden_size,activation=tf.nn.relu,kernel_initializer=create_initializer(initializer_range))
 	comparison_result = tf.layers.dense(comparison_result,3,kernel_initializer=create_initializer(initializer_range))
 	#comparison_result = tf.nn.softmax(comparison_result)
