@@ -33,8 +33,8 @@ def load_vectors(fname,vocab_size,embedding_size):
 	std = np.std(data_ndarray[1:,:],axis=-1)
 	mean_of_std = np.mean(std)
 
-	token2id["UNK"] = token_id
-	id2token[vocab_size] = "UNK"
+	token2id["[UNK]"] = token_id
+	id2token[vocab_size] = "[UNK]"
 	data_ndarray[token_id,:] = np.random.normal(mean_of_mean,mean_of_std,[embedding_size])
 	return (token2id,id2token,data_ndarray)
 
@@ -110,13 +110,13 @@ def build_char_vocabs(data_dir, char_embedding_table, char_dict, PairIndexDict):
 	chars2id["[PAD]"] = 0
 	id2chars[0] = "[PAD]"
 	tokenC_embeddings.append(np.zeros([30]))
+	token_id = 1
 
 	for sen in all_sentences:
-		token_id = 1
+		
 		tokens = tokenizer.tokenize(sen)
 		chars_embedding = np.ndarray((len(tokens),char_embedding_size))
 		for token in tokens:
-
 			if token not in chars2id:
 				chars2id[token] = token_id
 				id2chars[token_id] = token
@@ -151,15 +151,19 @@ if __name__ == "__main__":
 	char_embedding_table = np.random.uniform(-0.25,0.25,(37,30))
 	for task in data_dir:
 		(chars2id,id2chars,token_char_embedding_table) = build_char_vocabs(task,char_embedding_table,char_dict,PairIndexDict[task])
-		pickle.dump([chars2id,id2chars,token_char_embedding_table],open(task + "_char_vocab_embedding.p","wb"))
+		with open("vocab_" + task + "_file.txt","w") as f:
+			for token in chars2id:
+				f.write(token + "\n")
+
+		pickle.dump([chars2id,id2chars,token_char_embedding_table],open(task + "-char_vocab_embedding.p","wb"))
 		print("task: " + task)
 		print(token_char_embedding_table.shape[0])
 
-	'''
+	
 	(token2id,id2token,embedding_table) = load_vectors("wiki-news-300d-1M.vec",30000,300)
 	pickle.dump([token2id,id2token,embedding_table],open("wiki-news-300d-30k.p","wb"))
 
 	with open("vocab_file.txt","w") as f:
 		for token in token2id:
 			f.write(token + "\n")
-	'''
+	
