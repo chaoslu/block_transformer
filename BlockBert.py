@@ -296,7 +296,7 @@ class BlockBertModel(object):
 			with tf.variable_scope("comparison"):
 				self.comparison_output = comparison_layer(
 							premise_output=self.interaction_output_p,
-							hypothesis_output=self.inter_attention_output_h,
+							hypothesis_output=self.interaction_output_h,
 							premise_input_tensor=self.interaction_input_p,
 							hypothesis_input_tensor=self.interaction_input_h,
 							initializer_range=0.02)
