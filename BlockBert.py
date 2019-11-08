@@ -1075,8 +1075,8 @@ def attention_sublayer(from_tensor,
 						gaussian_prior_factor=None,
 						gaussian_prior_bias=None):
 
-	attention_heads = []
-	(attention_heads,attention_scores) = attention_layer(
+	
+	(attention_output,attention_scores) = attention_layer(
 						from_tensor=from_tensor,
 						to_tensor=to_tensor,
 						layer_idx=layer_idx,
@@ -1095,13 +1095,7 @@ def attention_sublayer(from_tensor,
 						to_seq_length=to_seq_length,
 						gaussian_prior_factor=gaussian_prior_factor,
 						gaussian_prior_bias=gaussian_prior_bias)
-	attention_output = None
-	if len(attention_heads) == 1:
-		attention_output = attention_heads[0]
-	else:
-		# In the case where we have other sequences, we just concatenate
-		# them to the self-attention head before the projection.
-		attention_output = tf.concat(attention_heads, axis=-1)	
+	
 
 	# Run a linear projection of `hidden_size` then add a residual
 	# with `layer_input`.
