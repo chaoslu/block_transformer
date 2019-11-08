@@ -174,7 +174,6 @@ class BlockBertModel(object):
 		if hypothesis_input_mask is None:
 			hypothesis_input_mask = tf.ones(shape=[batch_size, seq_length], dtype=tf.int32)
 
-		with tf.variable_scope(scope, default_name="bert"):
 			with tf.variable_scope("embeddings"):
 				# Perform embedding lookup on the word ids.
 				(self.premise_embedding_output,self.hypothesis_embedding_output,self.embedding_table) = embedding_lookup(
@@ -254,47 +253,49 @@ class BlockBertModel(object):
 			self.encoder_output_p = self.all_encoder_layers_p[-1]
 			self.encoder_output_h = self.all_encoder_layers_h[-1]
 
-			# adding the positional encoding to encoder output
-			self.interaction_input_p = embedding_position_processor(
-						input_tensor=self.encoder_output_p,
-						position_embedding_name="position_embeddings",
-						initializer_range=config.initializer_range,
-						dropout_prob=config.hidden_dropout_prob)
+			with tf.variable_scope("interactor"):
+				# adding the positional encoding to encoder output
+				self.interaction_input_p = embedding_position_processor(
+							input_tensor=self.encoder_output_p,
+							position_embedding_name="position_embeddings",
+							initializer_range=config.initializer_range,
+							dropout_prob=config.hidden_dropout_prob)
 
-			self.interaction_input_h = embedding_position_processor(
-						input_tensor=self.encoder_output_h,
-						position_embedding_name="position_embeddings",
-						initializer_range=config.initializer_range,
-						dropout_prob=config.hidden_dropout_prob)
+				self.interaction_input_h = embedding_position_processor(
+							input_tensor=self.encoder_output_h,
+							position_embedding_name="position_embeddings",
+							initializer_range=config.initializer_range,
+							dropout_prob=config.hidden_dropout_prob)
 
-			(self.all_interaction_layers_p, self.all_interaction_layers_h, self.inter_attetnion_scores_p,
-				self.inter_attetnion_scores_h) = interaction_transformer_model(
-						premise_input_tensor=self.interaction_input_p,
-						hypothesis_input_tensor=self.interaction_input_h,
-						attention_mask_premise=attention_mask_2p,
-						attention_mask_hypothesis=attention_mask_2h,
-						dependency_size=64,
-						hidden_size=config.hidden_size,
-						num_interaction_layers=config.num_interaction_layers,
-						num_attention_heads=config.num_attention_heads,
-						intermediate_size=config.intermediate_size,
-						intermediate_act_fn=gelu,
-						hidden_dropout_prob=0.1,
-						attention_probs_dropout_prob=0.1,
-						initializer_range=0.02,
-						do_return_all_layers=True,
-						gaussian_prior_factor=config.gaussian_prior_factor,
-						gaussian_prior_bias=config.gaussian_prior_bias)
+				(self.all_interaction_layers_p, self.all_interaction_layers_h, self.inter_attetnion_scores_p,
+					self.inter_attetnion_scores_h) = interaction_transformer_model(
+							premise_input_tensor=self.interaction_input_p,
+							hypothesis_input_tensor=self.interaction_input_h,
+							attention_mask_premise=attention_mask_2p,
+							attention_mask_hypothesis=attention_mask_2h,
+							dependency_size=64,
+							hidden_size=config.hidden_size,
+							num_interaction_layers=config.num_interaction_layers,
+							num_attention_heads=config.num_attention_heads,
+							intermediate_size=config.intermediate_size,
+							intermediate_act_fn=gelu,
+							hidden_dropout_prob=0.1,
+							attention_probs_dropout_prob=0.1,
+							initializer_range=0.02,
+							do_return_all_layers=True,
+							gaussian_prior_factor=config.gaussian_prior_factor,
+							gaussian_prior_bias=config.gaussian_prior_bias)
 
 			self.interaction_output_p = self.all_interaction_layers_p[-1]
 			self.interaction_output_h = self.all_interaction_layers_h[-1]
 
-			self.comparison_output = comparison_layer(
-						premise_output=self.interaction_output_p,
-						hypothesis_output=self.inter_attention_output_h,
-						premise_input_tensor=self.interaction_input_p,
-						hypothesis_input_tensor=self.interaction_input_h,
-						initializer_range=0.02)
+			with tf.variable_scope("comparison"):
+				self.comparison_output = comparison_layer(
+							premise_output=self.interaction_output_p,
+							hypothesis_output=self.inter_attention_output_h,
+							premise_input_tensor=self.interaction_input_p,
+							hypothesis_input_tensor=self.interaction_input_h,
+							initializer_range=0.02)
 			# The "pooler" converts the encoded sequence tensor of shape
 			# [batch_size, seq_length, hidden_size] to a tensor of shape
 			# [batch_size, hidden_size]. This is necessary for segment-level
