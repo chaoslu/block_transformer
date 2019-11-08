@@ -772,11 +772,12 @@ def create_model(bert_config, is_training, premise_input_ids, premise_input_char
 	attention_filters = attention_filters[out_layer_num]
 	'''
 
+	output_layer = model.get_comparision_output()
+
 	attention_scores = model.get_attention_scores(name="enc-p")
 	attention_scores = attention_scores[out_layer_num]
 	
 
-	output_layer = model.get_comparision_output()
 
 
 	
