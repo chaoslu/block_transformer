@@ -629,8 +629,8 @@ def embedding_lookup(premise_input_ids,
 		chars_output_p,chars_output_h = transform_to_dense(flat_input_chars_ids_p,flat_input_chars_ids_h,
 										chars_embedding_table,chars_vocab_size,use_one_hot_embeddings)
 		# concatenate word representation and character representation
-		output_p = tf.concat(word_output_p, chars_output_p, axis=-1)
-		output_h = tf.concat(word_output_h, chars_output_h, axis=-1)
+		output_p = tf.concat(word_output_p, chars_output_p, axis=1)
+		output_h = tf.concat(word_output_h, chars_output_h, axis=1)
 
 		#enlarge embedding size for output reshape
 		embedding_size += chars_embedding_size
