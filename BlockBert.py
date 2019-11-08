@@ -1372,9 +1372,6 @@ def interaction_transformer_model(premise_input_tensor,
 	prev_output_premise = reshape_to_matrix(premise_input_tensor)
 	prev_output_hypothesis = reshape_to_matrix(hypothesis_input_tensor)
 
-	attention_mask_premise = attention_mask[0]
-	attention_mask_hypothesis = attention_mask[1]
-
 	all_layer_outputs_premise = []
 	all_layer_outputs_hypothesis = []
 	all_layer_attentions_premise =[]
@@ -1394,46 +1391,49 @@ def interaction_transformer_model(premise_input_tensor,
 			hypothesis_layer_input = prev_output_hypothesis
 			
 			with tf.variable_scope("intra_attention"):
-				(self_attention_output_p,self_attention_scores_p) = attention_sublayer(
-							from_tensor=premise_layer_input,
-							to_tensor=premise_layer_input,
-							layer_idx=layer_idx,
-							attention_mask=attention_mask_premise,
-							hidden_size=hidden_size,
-							hidden_dropout_prob=hidden_dropout_prob,
-							num_attention_heads=num_attention_heads,
-							size_per_head=attention_head_size,
-							dependency_size=dependency_size,
-							attention_probs_dropout_prob=attention_probs_dropout_prob,
-							initializer_range=initializer_range,
-							do_return_2d_tensor=True,
-							batch_size=batch_size,
-							from_seq_length=seq_length,
-							to_seq_length=seq_length,
-							gaussian_prior_factor=gaussian_prior_factor,
-							gaussian_prior_bias=gaussian_prior_bias)
+				with tf.variable_scope("premise"):
+					(self_attention_output_p,self_attention_scores_p) = attention_sublayer(
+								from_tensor=premise_layer_input,
+								to_tensor=premise_layer_input,
+								layer_idx=layer_idx,
+								attention_mask=attention_mask_premise,
+								hidden_size=hidden_size,
+								hidden_dropout_prob=hidden_dropout_prob,
+								num_attention_heads=num_attention_heads,
+								size_per_head=attention_head_size,
+								dependency_size=dependency_size,
+								attention_probs_dropout_prob=attention_probs_dropout_prob,
+								initializer_range=initializer_range,
+								do_return_2d_tensor=True,
+								batch_size=batch_size,
+								from_seq_length=seq_length,
+								to_seq_length=seq_length,
+								gaussian_prior_factor=gaussian_prior_factor,
+								gaussian_prior_bias=gaussian_prior_bias)
 
-				(self_attention_output_h,self_attention_scores_h) = attention_sublayer(
-							from_tensor=hypothesis_layer_input,
-							to_tensor=hypothesis_layer_input,
-							layer_idx=layer_idx,
-							attention_mask=attention_mask_hypothesis,
-							hidden_size=hidden_size,
-							hidden_dropout_prob=hidden_dropout_prob,
-							num_attention_heads=num_attention_heads,
-							size_per_head=attention_head_size,
-							dependency_size=dependency_size,
-							attention_probs_dropout_prob=attention_probs_dropout_prob,
-							initializer_range=initializer_range,
-							do_return_2d_tensor=True,
-							batch_size=batch_size,
-							from_seq_length=seq_length,
-							to_seq_length=seq_length,
-							gaussian_prior_factor=gaussian_prior_factor,
-							gaussian_prior_bias=gaussian_prior_bias)
+				with tf.variable_scope("hypothesis"):
+					(self_attention_output_h,self_attention_scores_h) = attention_sublayer(
+								from_tensor=hypothesis_layer_input,
+								to_tensor=hypothesis_layer_input,
+								layer_idx=layer_idx,
+								attention_mask=attention_mask_hypothesis,
+								hidden_size=hidden_size,
+								hidden_dropout_prob=hidden_dropout_prob,
+								num_attention_heads=num_attention_heads,
+								size_per_head=attention_head_size,
+								dependency_size=dependency_size,
+								attention_probs_dropout_prob=attention_probs_dropout_prob,
+								initializer_range=initializer_range,
+								do_return_2d_tensor=True,
+								batch_size=batch_size,
+								from_seq_length=seq_length,
+								to_seq_length=seq_length,
+								gaussian_prior_factor=gaussian_prior_factor,
+								gaussian_prior_bias=gaussian_prior_bias)
 
 
 			with tf.variable_scope("inter_attention"):
+				with tf.variable_scope("premise"):
 					(inter_attention_output_p,inter_attention_scores_p) = attention_sublayer(
 								from_tensor=self_attention_output_p,
 								to_tensor=self_attention_output_h,
@@ -1451,6 +1451,7 @@ def interaction_transformer_model(premise_input_tensor,
 								gaussian_prior_factor=gaussian_prior_factor,
 								gaussian_prior_bias=gaussian_prior_bias)
 
+				with tf.variable_scope("hypothesis"):
 					(inter_attention_output_h,inter_attention_scores_h) = attention_sublayer(
 								from_tensor=self_attention_output_h,
 								to_tensor=self_attention_output_p,
