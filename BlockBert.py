@@ -1502,7 +1502,7 @@ def interaction_transformer_model(premise_input_tensor,
 			# and the inter attetnion part, thus a 2-tuple
 
 			all_layer_attentions_premise.append((self_attention_scores_p,inter_attention_scores_p))
-			all_layer_attentions_hypothesis.append(self_attention_scores_h,inter_attention_scores_h)
+			all_layer_attentions_hypothesis.append((self_attention_scores_h,inter_attention_scores_h))
 
 
 	if do_return_all_layers:
