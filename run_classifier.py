@@ -691,7 +691,7 @@ def file_based_input_fn_builder(input_file, seq_length, is_training,
 			"input_chars_ids_a": tf.FixedLenFeature([seq_length], tf.int64),
 			"input_ids_b": tf.FixedLenFeature([seq_length], tf.int64),
 			"input_mask_b": tf.FixedLenFeature([seq_length], tf.int64),
-			"input_chars_ids_a": tf.FixedLenFeature([seq_length], tf.int64),
+			"input_chars_ids_b": tf.FixedLenFeature([seq_length], tf.int64),
 			"label_ids": tf.FixedLenFeature([], tf.int64),
 			"is_real_example": tf.FixedLenFeature([], tf.int64),
 	}
@@ -1048,12 +1048,13 @@ def main(_):
 
 	if FLAGS.do_train:
 		train_file = os.path.join(FLAGS.output_dir, "train.tf_record")
-		file_based_convert_examples_to_features(
-				train_examples, label_list, FLAGS.max_seq_length, tokenizer, train_file)
-		tf.logging.info("***** Running training *****")
-		tf.logging.info("  Num examples = %d", len(train_examples))
-		tf.logging.info("  Batch size = %d", FLAGS.train_batch_size)
-		tf.logging.info("  Num steps = %d", num_train_steps)
+		if not os.path.exists(train_file):
+			file_based_convert_examples_to_features(
+					train_examples, label_list, FLAGS.max_seq_length, tokenizer, train_file)
+			tf.logging.info("***** Running training *****")
+			tf.logging.info("  Num examples = %d", len(train_examples))
+			tf.logging.info("  Batch size = %d", FLAGS.train_batch_size)
+			tf.logging.info("  Num steps = %d", num_train_steps)
 		train_input_fn = file_based_input_fn_builder(
 				input_file=train_file,
 				seq_length=FLAGS.max_seq_length,
