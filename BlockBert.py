@@ -345,10 +345,10 @@ class BlockBertModel(object):
 		return self.key_filter
 
 	def get_attention_scores(self,name):
-		attention_dict = {"enc-h":self.encoding_attention_scores_h,
+		attention_dict = {"enc-h":self.all_encoder_layers_h,
 						  "enc-p":self.encoding_attention_scores_p,
 						  "inter-h":self.inter_attention_scores_h,
-						  "inter-p":self.inter_attention_scores_p}
+						  "inter-p":self.inter_attetnion_scores_p}
 		return attention_dict[name]
 
 
