@@ -174,6 +174,7 @@ class BlockBertModel(object):
 		if hypothesis_input_mask is None:
 			hypothesis_input_mask = tf.ones(shape=[batch_size, seq_length], dtype=tf.int32)
 
+		with tf.variable_scope("block-transformer"):
 			with tf.variable_scope("embeddings"):
 				# Perform embedding lookup on the word ids.
 				(self.premise_embedding_output,self.hypothesis_embedding_output,self.embedding_table) = embedding_lookup(
