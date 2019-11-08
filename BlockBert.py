@@ -679,7 +679,7 @@ def embedding_position_processor(input_tensor,
 	width = input_shape[2]
 
 	output = input_tensor	
-	position_embeddings = get_timing_signal_1d(seq_lengths, width)
+	position_embeddings = get_timing_signal_1d(seq_length, width)
 	output += position_embeddings
 
 	output = layer_norm_and_dropout(output, dropout_prob)
