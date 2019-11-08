@@ -194,14 +194,12 @@ class BlockBertModel(object):
 				# normalize and perform dropout.
 				self.premise_embedding_output = embedding_position_processor(
 						input_tensor=self.premise_embedding_output,
-						use_position_embeddings=True,
 						position_embedding_name="position_embeddings",
 						initializer_range=config.initializer_range,
 						dropout_prob=config.hidden_dropout_prob)
 
 				self.hypothesis_embedding_output = embedding_position_processor(
 						input_tensor=self.hypothesis_embedding_output,
-						use_position_embeddings=True,
 						position_embedding_name="position_embeddings",
 						initializer_range=config.initializer_range,
 						dropout_prob=config.hidden_dropout_prob)
