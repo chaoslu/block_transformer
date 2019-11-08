@@ -1531,7 +1531,7 @@ def comparison_layer(premise_output,
 	seq_length = input_shape[1]
 	hidden_size = input_shape[2]
 	
-	premise = tf.concat(premise_input_tensor,premise_output)
+	premise = tf.concat(premise_output,premise_input_tensor)
 	hypothesis = tf.concat(hypothesis_input_tensor,hypothesis_output)
 
 	premise = tf.layers.dense(premise,hidden_size,activation=tf.nn.relu,kernel_initializer=create_initializer(initializer_range))
