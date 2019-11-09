@@ -271,8 +271,8 @@ class BlockBertModel(object):
 							initializer_range=config.initializer_range,
 							dropout_prob=config.hidden_dropout_prob)
 
-				(self.all_interaction_layers_p, self.all_interaction_layers_h, self.inter_attetnion_scores_p,
-					self.inter_attetnion_scores_h) = interaction_transformer_model(
+				(self.all_interaction_layers_p, self.all_interaction_layers_h, self.inter_attention_scores_p,
+					self.inter_attention_scores_h) = interaction_transformer_model(
 							premise_input_tensor=self.interaction_input_p,
 							hypothesis_input_tensor=self.interaction_input_h,
 							attention_mask_premise=attention_mask_2p,
@@ -352,7 +352,7 @@ class BlockBertModel(object):
 		attention_dict = {"enc-h":self.encoding_attention_scores_h,
 						  "enc-p":self.encoding_attention_scores_p,
 						  "inter-h":self.inter_attention_scores_h,
-						  "inter-p":self.inter_attetnion_scores_p}
+						  "inter-p":self.inter_attention_scores_p}
 		return attention_dict[name]
 
 
