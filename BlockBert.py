@@ -545,11 +545,11 @@ def get_timing_signal_1d(length,
 
 
 def load_embedding_table(fname):
-	_,_,embedding_table = cPickle.load(open(fname,"rb"))
+	_,_,embedding_table = pickle.load(open(fname,"rb"))
 	return embedding_table
 
 def load_chars_embedding_table(fname):
-	_,_,embedding_table = cPickle.load(open(fname,"rb"))
+	_,_,embedding_table = pickle.load(open(fname,"rb"))
 	return embedding_table
 
 def embedding_lookup(premise_input_ids,
