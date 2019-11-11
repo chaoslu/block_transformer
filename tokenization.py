@@ -134,13 +134,6 @@ def load_vocab(vocab_file):
 	return vocab
 
 
-def load_vocab_pretrained(pretrained_vocab_file):
-	token2ids,_,_ = pickle.load(open(pretrained_vocab_file,"rb"))
-	return token2ids
-
-def load_vocab_charbased(char_vocab_file):
-	chars2ids,_,_ = pickle.load(open(char_vocab_file,"rb"))
-	return chars2ids
 
 def convert_by_vocab(vocab, items):
 	"""Converts a sequence of [tokens|ids] using the vocab."""
@@ -171,14 +164,10 @@ class FullTokenizer(object):
 	"""Runs end-to-end tokenziation."""
 
 	def __init__(self, vocab_file, chars_vocab_file, do_lower_case=True, use_pretraining=False):
-		if use_pretraining:
-			vocabulary = load_vocab_pretrained(vocab_file)
-		else:
-			vocabulary = load_vocab(vocab_file)
 
-		self.vocab = vocabulary
+		
+		self.vocab = load_vocab(vocab_file)
 		self.inv_vocab = {v: k for k, v in self.vocab.items()}
-		self.chars_vocab = load_vocab_charbased(chars_vocab_file)
 		self.basic_tokenizer = BasicTokenizer(do_lower_case=do_lower_case)
 		self.wordpiece_tokenizer = WordpieceTokenizer(vocab=self.vocab)
 		self.use_pretraining = use_pretraining
