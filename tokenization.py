@@ -133,6 +133,10 @@ def load_vocab(vocab_file):
 			index += 1
 	return vocab
 
+def load_chars_vocab(chars_vocab_file):
+	token2charsid,_,_ = pickle.load(open(chars_vocab_filem,"wb"))
+	return token2charsid
+
 
 
 def convert_by_vocab(vocab, items):
@@ -168,6 +172,7 @@ class FullTokenizer(object):
 		
 		self.vocab = load_vocab(vocab_file)
 		self.inv_vocab = {v: k for k, v in self.vocab.items()}
+		self.chars_vocab = load_chars_vocab(chars_vocab_file)
 		self.basic_tokenizer = BasicTokenizer(do_lower_case=do_lower_case)
 		self.wordpiece_tokenizer = WordpieceTokenizer(vocab=self.vocab)
 		self.use_pretraining = use_pretraining
