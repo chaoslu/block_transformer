@@ -134,7 +134,7 @@ def load_vocab(vocab_file):
 	return vocab
 
 def load_chars_vocab(chars_vocab_file):
-	token2charsid,_,_ = pickle.load(open(chars_vocab_file,"wb"))
+	token2charsid,_,_ = pickle.load(open(chars_vocab_file,"rb"))
 	return token2charsid
 
 
