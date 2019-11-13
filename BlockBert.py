@@ -580,6 +580,9 @@ def embedding_lookup(premise_input_ids,
 	#
 	# If the input is a 2D tensor of shape [batch_size, seq_length], we
 	# reshape to [batch_size, seq_length, 1].
+
+	token_embedding_size = embedding_size
+
 	if premise_input_ids.shape.ndims == 2:
 		premise_input_ids = tf.expand_dims(premise_input_ids, axis=[-1])
 		hypothesis_input_ids = tf.expand_dims(hypothesis_input_ids, axis=[-1])
@@ -589,10 +592,14 @@ def embedding_lookup(premise_input_ids,
 	if use_pretraining:
 		embedding_table = word_table
 		embedding_table = tf.constant(embedding_table)
+		_,word_embedding_size = word_table.shape
+		token_embedding_size = word_embedding_size
+		
+
 	else:
 		embedding_table = tf.get_variable(
 				name=word_embedding_name,
-				shape=[vocab_size, embedding_size],
+				shape=[vocab_size, token_embedding_size],
 				initializer=create_initializer(initializer_range))
 
 
@@ -631,7 +638,7 @@ def embedding_lookup(premise_input_ids,
 		output_h = tf.concat([word_output_h, chars_output_h], axis=1)
 
 		#enlarge embedding size for output reshape
-		embedding_size += chars_embedding_size
+		token_embedding_size += chars_embedding_size
 	
 	else:
 		output_p = word_output_p
@@ -640,8 +647,8 @@ def embedding_lookup(premise_input_ids,
 
 	input_shape = get_shape_list(premise_input_ids)
 
-	output_p = tf.reshape(output_p, input_shape[0:-1] + [input_shape[-1] * embedding_size])
-	output_h = tf.reshape(output_h, input_shape[0:-1] + [input_shape[-1] * embedding_size])
+	output_p = tf.reshape(output_p, input_shape[0:-1] + [input_shape[-1] * token_embedding_size])
+	output_h = tf.reshape(output_h, input_shape[0:-1] + [input_shape[-1] * token_embedding_size])
 	return (output_p, output_h, embedding_table)
 
 
