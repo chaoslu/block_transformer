@@ -593,7 +593,7 @@ def embedding_lookup(premise_input_ids,
 		embedding_table = word_table
 		_,word_embedding_size = word_table.shape
 		token_embedding_size = word_embedding_size
-		tf.logging("The pretrained word embedding dimension: %d" %word_embedding_size)
+		tf.logging("The pretrained word embedding dimension: %s" %word_embedding_size)
 
 		#embedding_table = tf.constant(embedding_table)	
 		
