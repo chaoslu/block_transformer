@@ -21,6 +21,7 @@ from __future__ import print_function
 import collections
 import csv
 import os
+import pickle
 import BlockBert
 import optimization
 import tokenization
