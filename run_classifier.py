@@ -56,8 +56,11 @@ flags.DEFINE_string(
 
 flags.DEFINE_bool("use_pretraining", False, "whether to use pretrained word embeddings")
 
-flags.DEFINE_string("chars_vocab_file", None,
-										"The vocabulary file that the model use for char representation.")
+flags.DEFINE_string("word_embedding_file", None,
+										"The vocabulary file that the model use for word representation.")
+
+flags.DEFINE_string("chars_embedding_file", None,
+										"The vocabulary file that the model use for chars representation.")
 
 flags.DEFINE_string(
 		"init_checkpoint", None,
@@ -741,7 +744,7 @@ def _truncate_seq(tokens, max_length):
 
 def create_model(bert_config, is_training, premise_input_ids, premise_input_chars_ids, premise_input_mask,
 								hypothesis_input_ids, hypothesis_input_chars_ids, hypothesis_input_mask, 
-								labels, num_labels, use_one_hot_embeddings, use_pretraining):
+								word_table, chars_table, labels, num_labels, use_one_hot_embeddings, use_pretraining):
 	"""Creates a classification model."""
 	model = BlockBert.BlockBertModel(
 			config=bert_config,
@@ -750,6 +753,8 @@ def create_model(bert_config, is_training, premise_input_ids, premise_input_char
 			hypothesis_input_ids=hypothesis_input_ids,
 			premise_input_chars_ids=premise_input_chars_ids,
 			hypothesis_input_chars_ids=hypothesis_input_chars_ids,
+			word_table=word_table,
+			chars_table=chars_table,
 			premise_input_mask=premise_input_mask,
 			hypothesis_input_mask=hypothesis_input_mask,
 			use_one_hot_embeddings=use_one_hot_embeddings,
@@ -777,8 +782,6 @@ def create_model(bert_config, is_training, premise_input_ids, premise_input_char
 	attention_scores = model.get_attention_scores(name="enc-p")
 	attention_scores = attention_scores[out_layer_num]
 	
-
-
 
 	
 	if is_training:
@@ -825,10 +828,18 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
 
 		is_training = (mode == tf.estimator.ModeKeys.TRAIN)
 
+		word_pretrained_embeddings = None
+		chars_pretrained_embeddings = None
+		
+		if FLAGS.use_pretraining:
+			word_pretrained_embeddings = load_word_embedding_table(FLAGS.word_embedding_file)
+			chars_pretrained_embeddings = load_chars_embedding_table(FLAGS.chars_embedding_file)
+
+
 		(total_loss, per_example_loss, logits, probabilities) = create_model(
-				bert_config, is_training, input_ids_premise, input_chars_ids_premise, input_mask_premise,
-				input_ids_hypothesis, input_chars_ids_hypothesis, input_mask_hypothesis, label_ids,
-				num_labels, use_one_hot_embeddings, use_pretraining)
+				bert_config, is_training, input_ids_premise, input_ids_hypothesis, input_chars_ids_premise, 
+				input_chars_ids_hypothesis, input_mask_premise, input_mask_hypothesis, word_pretrained_embeddings,
+				chars_pretrained_embeddings, label_ids, num_labels, use_one_hot_embeddings, use_pretraining)
 		
 		'''
 		if FLAGS.predict_op == "query":
@@ -962,6 +973,16 @@ def convert_examples_to_features(examples, label_list, max_seq_length,
 	return features
 
 
+def load_word_embedding_table(fname):
+	_,_,embedding_table = pickle.load(open(fname,"rb"))
+	return embedding_table
+
+
+def load_chars_embedding_table(fname):
+	_,_,embedding_table = pickle.load(open(fname,"rb"))
+	return embedding_table
+
+
 def main(_):
 	tf.logging.set_verbosity(tf.logging.INFO)
 
@@ -998,7 +1019,7 @@ def main(_):
 
 	label_list = processor.get_labels()
 
-	tokenizer = tokenization.FullTokenizer(vocab_file=FLAGS.vocab_file, chars_vocab_file=FLAGS.chars_vocab_file,
+	tokenizer = tokenization.FullTokenizer(vocab_file=FLAGS.vocab_file, chars_vocab_file=FLAGS.chars_embedding_file,
 										use_pretraining=FLAGS.use_pretraining, do_lower_case=FLAGS.do_lower_case)
 
 	tpu_cluster_resolver = None

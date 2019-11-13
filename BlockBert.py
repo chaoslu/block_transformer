@@ -138,6 +138,8 @@ class BlockBertModel(object):
 				 hypothesis_input_ids,
 				 premise_input_chars_ids=None,
 				 hypothesis_input_chars_ids=None,
+				 word_table=None,
+				 chars_table=None,
 				 premise_input_mask=None,
 				 hypothesis_input_mask=None,
 				 use_one_hot_embeddings=False,
@@ -182,6 +184,8 @@ class BlockBertModel(object):
 						hypothesis_input_ids=hypothesis_input_ids,
 						premise_input_chars_ids=premise_input_chars_ids,
 				 		hypothesis_input_chars_ids=hypothesis_input_chars_ids,
+				 		word_table=word_table,
+				 		chars_table=chars_table,
 						vocab_size=config.vocab_size,
 						embedding_size=config.hidden_size,
 						initializer_range=config.initializer_range,
@@ -544,19 +548,13 @@ def get_timing_signal_1d(length,
 	return signal
 
 
-def load_embedding_table(fname):
-	_,_,embedding_table = pickle.load(open(fname,"rb"))
-	return embedding_table
-
-def load_chars_embedding_table(fname):
-	_,_,embedding_table = pickle.load(open(fname,"rb"))
-	return embedding_table
-
 def embedding_lookup(premise_input_ids,
 					 hypothesis_input_ids,
 					 premise_input_chars_ids,
 				 	 hypothesis_input_chars_ids,
 					 vocab_size,
+					 word_table=None,
+					 chars_table=None,
 					 embedding_size=300,
 					 initializer_range=0.02,
 					 word_embedding_name="word_embeddings",
@@ -589,7 +587,7 @@ def embedding_lookup(premise_input_ids,
 		hypothesis_input_chars_ids = tf.expand_dims(hypothesis_input_chars_ids, axis=[-1])
 
 	if use_pretraining:
-		embedding_table = load_embedding_table(embedding_file)
+		embedding_table = word_table
 		embedding_table = tf.constant(embedding_table)
 	else:
 		embedding_table = tf.get_variable(
@@ -620,7 +618,7 @@ def embedding_lookup(premise_input_ids,
 													vocab_size,use_one_hot_embeddings)
 
 	if use_pretraining:
-		chars_embedding_table = load_chars_embedding_table(chars_embedding_file)
+		chars_embedding_table = chars_table
 		chars_vocab_size,chars_embedding_size = chars_embedding_table.shape
 		
 		flat_input_chars_ids_p = tf.reshape(premise_input_chars_ids, [-1])
