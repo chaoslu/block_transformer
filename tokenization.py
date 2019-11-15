@@ -131,6 +131,9 @@ def load_vocab(vocab_file):
 			token = token.strip()
 			vocab[token] = index
 			index += 1
+	
+	assert "[UNK]" in vocab
+
 	return vocab
 
 def load_chars_vocab(chars_vocab_file):
@@ -176,6 +179,7 @@ class FullTokenizer(object):
 		self.basic_tokenizer = BasicTokenizer(vocab=self.vocab, do_lower_case=do_lower_case)
 		self.wordpiece_tokenizer = WordpieceTokenizer(vocab=self.vocab)
 		self.use_pretraining = use_pretraining
+
 
 	def tokenize(self, text):
 		split_tokens = []
