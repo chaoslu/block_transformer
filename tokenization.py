@@ -230,9 +230,11 @@ class BasicTokenizer(object):
 			if self.do_lower_case:
 				token = token.lower()
 				token = self._run_strip_accents(token)
-				if token not in self.pretrained_vocab:
-					token = "[UNK]"
-			split_tokens.extend(self._run_split_on_punc(token))
+			
+			token = self._run_split_on_punc(token)	
+			if token not in self.pretrained_vocab:
+				token = "[UNK]"
+			split_tokens.extend(token)
 
 		output_tokens = whitespace_tokenize(" ".join(split_tokens))
 		return output_tokens
