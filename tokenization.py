@@ -181,10 +181,10 @@ class FullTokenizer(object):
 		self.use_pretraining = use_pretraining
 
 
-	def tokenize(self, text):
+	def tokenize(self, text, introduce_unk=False):
 		split_tokens = []
 		if self.use_pretraining:
-			for token in self.basic_tokenizer.tokenize(text):
+			for token in self.basic_tokenizer.tokenize(text,introduce_unk):
 				split_tokens.append(token)
 		else:
 				for token in self.basic_tokenizer.tokenize(text):
@@ -206,7 +206,7 @@ class FullTokenizer(object):
 class BasicTokenizer(object):
 	"""Runs basic tokenization (punctuation splitting, lower casing, etc.)."""
 
-	def __init__(self, vocab, do_lower_case=True):
+	def __init__(self, vocab=None, do_lower_case=True):
 		"""Constructs a BasicTokenizer.
 
 		Args:
@@ -215,7 +215,7 @@ class BasicTokenizer(object):
 		self.do_lower_case = do_lower_case
 		self.pretrained_vocab = vocab
 
-	def tokenize(self, text):
+	def tokenize(self, text, introduce_unk=False):
 		"""Tokenizes a piece of text."""
 		text = convert_to_unicode(text)
 		text = self._clean_text(text)
@@ -236,12 +236,16 @@ class BasicTokenizer(object):
 				token = self._run_strip_accents(token)
 			
 			tokens = self._run_split_on_punc(token)
-			tokens_for_unk = []
-			for token in tokens:	
-				if token not in self.pretrained_vocab:
-					token = "[UNK]"
-				tokens_for_unk.append(token)
-			split_tokens.extend(tokens_for_unk)
+
+			if introduce_unk:
+				tokens_for_unk = []
+				for token in tokens:	
+					if token not in self.pretrained_vocab:
+						token = "[UNK]"
+					tokens_for_unk.append(token)
+					tokens = tokens_for_unk
+
+			split_tokens.extend(tokens)
 
 		output_tokens = whitespace_tokenize(" ".join(split_tokens))
 		return output_tokens

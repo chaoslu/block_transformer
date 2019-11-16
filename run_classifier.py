@@ -593,8 +593,10 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
 	input_chars_ids_b = [0] * max_seq_length
 
 	if tokenizer.use_pretraining:
-		input_chars_ids_a = tokenizer.convert_tokens_to_chars_ids(tokens_a)
-		input_chars_ids_b = tokenizer.convert_tokens_to_chars_ids(tokens_b)
+		chars_a = tokenizer.tokenize(example.text_a,True)
+		chars_b = tokenizer.tokenize(example.text_b,True)
+		input_chars_ids_a = tokenizer.convert_tokens_to_chars_ids(chars_a)
+		input_chars_ids_b = tokenizer.convert_tokens_to_chars_ids(chars_b)
 
 
 	# The mask has 1 for real tokens and 0 for padding tokens. Only real
@@ -1021,7 +1023,8 @@ def main(_):
 	label_list = processor.get_labels()
 
 	tokenizer = tokenization.FullTokenizer(vocab_file=FLAGS.vocab_file, chars_vocab_file=FLAGS.chars_embedding_file,
-										use_pretraining=FLAGS.use_pretraining, do_lower_case=FLAGS.do_lower_case)
+										use_pretraining=FLAGS.use_pretraining, do_lower_case=FLAGS.do_lower_case,
+										introduce_unk=True)
 
 	tpu_cluster_resolver = None
 	if FLAGS.use_tpu and FLAGS.tpu_name:
