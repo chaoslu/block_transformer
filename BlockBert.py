@@ -187,6 +187,7 @@ class BlockBertModel(object):
 				 		word_table=word_table,
 				 		chars_table=chars_table,
 						vocab_size=config.vocab_size,
+						hidden_size=config.hidden_size,
 						embedding_size=config.hidden_size,
 						initializer_range=config.initializer_range,
 						word_embedding_name="word_embeddings",
@@ -199,6 +200,7 @@ class BlockBertModel(object):
 				with tf.variable_scope("premise"):
 					self.premise_embedding_output = embedding_position_processor(
 							input_tensor=self.premise_embedding_output,
+							hidden_size=config.hidden_size,
 							position_embedding_name="position_embeddings",
 							initializer_range=config.initializer_range,
 							dropout_prob=config.hidden_dropout_prob,
@@ -206,6 +208,7 @@ class BlockBertModel(object):
 				with tf.variable_scope("hypothesis"):
 					self.hypothesis_embedding_output = embedding_position_processor(
 							input_tensor=self.hypothesis_embedding_output,
+							hidden_size=config.hidden_size,
 							position_embedding_name="position_embeddings",
 							initializer_range=config.initializer_range,
 							dropout_prob=config.hidden_dropout_prob,
@@ -266,6 +269,7 @@ class BlockBertModel(object):
 				with tf.variable_scope("premise"):
 					self.interaction_input_p = embedding_position_processor(
 							input_tensor=self.encoder_output_p,
+							hidden_size=config.hidden_size,
 							position_embedding_name="position_embeddings",
 							initializer_range=config.initializer_range,
 							dropout_prob=config.hidden_dropout_prob,
@@ -274,6 +278,7 @@ class BlockBertModel(object):
 				with tf.variable_scope("hypothesis"):
 					self.interaction_input_h = embedding_position_processor(
 							input_tensor=self.encoder_output_h,
+							hidden_size=config.hidden_size,
 							position_embedding_name="position_embeddings",
 							initializer_range=config.initializer_range,
 							dropout_prob=config.hidden_dropout_prob,
@@ -557,6 +562,7 @@ def embedding_lookup(premise_input_ids,
 					 premise_input_chars_ids,
 				 	 hypothesis_input_chars_ids,
 					 vocab_size,
+					 hidden_size,
 					 word_table=None,
 					 chars_table=None,
 					 embedding_size=300,
@@ -618,13 +624,13 @@ def embedding_lookup(premise_input_ids,
 
 	def transform_to_dense(ids_p,ids_h,emb_table,vocab_size,use_one_hot_embeddings):
 		if use_one_hot_embeddings:
-			tf.logging.info("$$$$$$$$$$$   using one hot   $$$$$$$$$$$")
+
 			one_hot_input_ids_p = tf.one_hot(ids_p, depth=vocab_size)
 			one_hot_input_ids_h = tf.one_hot(ids_h, depth=vocab_size)
 			output_p = tf.matmul(one_hot_input_ids_p, emb_table)
 			output_h = tf.matmul(one_hot_input_ids_h, emb_table)
 		else:
-			tf.logging.info("###########   not using one hot   #############")
+
 			output_p = tf.gather(emb_table, flat_input_ids_p)
 			output_h = tf.gather(emb_table, flat_input_ids_h)
 
@@ -664,10 +670,14 @@ def embedding_lookup(premise_input_ids,
 
 	output_p = tf.reshape(output_p, input_shape[0:-1] + [input_shape[-1] * token_embedding_size])
 	output_h = tf.reshape(output_h, input_shape[0:-1] + [input_shape[-1] * token_embedding_size])
+	output_p = tf.layers.dense(output_p,hidden_size,initializer=create_initializer(initializer_range))
+	output_h = tf.layers.dense(output_h,hidden_size,initializer=create_initializer(initializer_range))
+
 	return (output_p, output_h, embedding_table)
 
 
 def embedding_position_processor(input_tensor,
+							hidden_size,
 							position_embedding_name="position_embeddings",
 							initializer_range=0.02,
 							dropout_prob=0.1,
@@ -704,7 +714,7 @@ def embedding_position_processor(input_tensor,
 	seq_length = input_shape[1]
 	width = input_shape[2]
 
-	position_embeddings = get_timing_signal_1d(seq_length, width)
+	position_embeddings = get_timing_signal_1d(seq_length, hidden_size)
 	if use_pretraining:
 		position_embeddings = tf.cast(position_embeddings,tf.float64)
 	output = input_tensor + position_embeddings
