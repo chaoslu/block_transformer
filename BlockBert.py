@@ -614,11 +614,13 @@ def embedding_lookup(premise_input_ids,
 
 	def transform_to_dense(ids_p,ids_h,emb_table,vocab_size,use_one_hot_embeddings):
 		if use_one_hot_embeddings:
+			tf.logging("$$$$$$$$$$$   using one hot   $$$$$$$$$$$")
 			one_hot_input_ids_p = tf.one_hot(ids_p, depth=vocab_size)
 			one_hot_input_ids_h = tf.one_hot(ids_h, depth=vocab_size)
 			output_p = tf.matmul(one_hot_input_ids_p, emb_table)
 			output_h = tf.matmul(one_hot_input_ids_h, emb_table)
 		else:
+			tf.logging("###########   not using one hot   #############")
 			output_p = tf.gather(emb_table, flat_input_ids_p)
 			output_h = tf.gather(emb_table, flat_input_ids_h)
 
