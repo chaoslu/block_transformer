@@ -605,6 +605,7 @@ def embedding_lookup(premise_input_ids,
 				name=word_embedding_name,
 				shape=[vocab_size, token_embedding_size],
 				initializer=create_initializer(initializer_range))
+		embedding_table = tf.cast(embedding_table,tf.float64)
 
 
 	flat_input_ids_p = tf.reshape(premise_input_ids, [-1])
