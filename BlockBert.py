@@ -597,7 +597,9 @@ def embedding_lookup(premise_input_ids,
 		#tf.logging("The pretrained word embedding dimension: %s" %word_embedding_size)
 
 		embedding_table = tf.constant(embedding_table)	
-		
+		emb_shape = get_shape_list(embedding_table)
+
+		assert emb_shape[1] == 300
 
 		
 
