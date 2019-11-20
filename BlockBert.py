@@ -631,15 +631,13 @@ def embedding_lookup(premise_input_ids,
 													vocab_size,use_one_hot_embeddings)
 
 	the_shape = get_shape_list(word_output_p)
-	assert the_shape[1] == 300
+	assert the_shape[1] == word_embedding_size
 
 
 
 	if use_pretraining:
 		chars_embedding_table = chars_table
 		chars_vocab_size,chars_embedding_size = chars_embedding_table.shape
-
-		assert chars_embedding_size == 30
 		
 		flat_input_chars_ids_p = tf.reshape(premise_input_chars_ids, [-1])
 		flat_input_chars_ids_h = tf.reshape(hypothesis_input_chars_ids, [-1])
@@ -653,7 +651,7 @@ def embedding_lookup(premise_input_ids,
 		output_h = tf.concat([word_output_h, chars_output_h], axis=1)
 
 		the_shape = get_shape_list(output_p)
-		assert the_shape[1] == 30
+		assert the_shape[1] == chars_embedding_size
 
 		#enlarge embedding size for output reshape
 		token_embedding_size += chars_embedding_size
