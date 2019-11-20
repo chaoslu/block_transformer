@@ -715,8 +715,8 @@ def embedding_position_processor(input_tensor,
 	width = input_shape[2]
 
 	position_embeddings = get_timing_signal_1d(seq_length, hidden_size)
-	if use_pretraining:
-		position_embeddings = tf.cast(position_embeddings,tf.float64)
+	#if use_pretraining:
+	#	position_embeddings = tf.cast(position_embeddings,tf.float64)
 	output = input_tensor + position_embeddings
 
 	output = layer_norm_and_dropout(output, dropout_prob)
