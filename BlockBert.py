@@ -597,10 +597,7 @@ def embedding_lookup(premise_input_ids,
 		#tf.logging("The pretrained word embedding dimension: %s" %word_embedding_size)
 
 		embedding_table = tf.constant(embedding_table)	
-		emb_shape = get_shape_list(embedding_table)
-
-		assert emb_shape[1] == 300
-
+		
 		
 
 	else:
@@ -631,6 +628,11 @@ def embedding_lookup(premise_input_ids,
 	word_output_p,word_output_h = transform_to_dense(flat_input_ids_p,flat_input_ids_h,embedding_table,
 													vocab_size,use_one_hot_embeddings)
 
+	the_shape = get_shape_list(word_output_p)
+	assert the_shape[1] == 300
+
+
+
 	if use_pretraining:
 		chars_embedding_table = chars_table
 		chars_vocab_size,chars_embedding_size = chars_embedding_table.shape
@@ -640,9 +642,14 @@ def embedding_lookup(premise_input_ids,
 		
 		chars_output_p,chars_output_h = transform_to_dense(flat_input_chars_ids_p,flat_input_chars_ids_h,
 										chars_embedding_table,chars_vocab_size,use_one_hot_embeddings)
+
+
 		# concatenate word representation and character representation
 		output_p = tf.concat([word_output_p, chars_output_p], axis=1)
 		output_h = tf.concat([word_output_h, chars_output_h], axis=1)
+
+		the_shape = get_shape_list(word_output_p)
+		assert the_shape[1] == 30
 
 		#enlarge embedding size for output reshape
 		token_embedding_size += chars_embedding_size
