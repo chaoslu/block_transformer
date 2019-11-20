@@ -636,6 +636,8 @@ def embedding_lookup(premise_input_ids,
 	if use_pretraining:
 		chars_embedding_table = chars_table
 		chars_vocab_size,chars_embedding_size = chars_embedding_table.shape
+
+		assert chars_embedding_size == 30
 		
 		flat_input_chars_ids_p = tf.reshape(premise_input_chars_ids, [-1])
 		flat_input_chars_ids_h = tf.reshape(hypothesis_input_chars_ids, [-1])
