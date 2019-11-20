@@ -885,7 +885,7 @@ def attention_layer(from_tensor,
 		distance_to_tensor = tf.expand_dims(distance_to_tensor,[2])
 
 		distance_tensor = (distance_from_tensor - distance_to_tensor) * (distance_from_tensor - distance_to_tensor)
-		distance_tensor = tf.cast(distance_tensor, tf.float32)
+		#distance_tensor = tf.cast(distance_tensor, tf.float32)
 		return distance_tensor
 
 
