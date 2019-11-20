@@ -619,8 +619,8 @@ def embedding_lookup(premise_input_ids,
 			output_p = tf.matmul(one_hot_input_ids_p, embedding_table)
 			output_h = tf.matmul(one_hot_input_ids_h, embedding_table)
 		else:
-			output_p = tf.gather(embedding_table, flat_input_ids_p)
-			output_h = tf.gather(embedding_table, flat_input_ids_h)
+			output_p = tf.gather(emb_table, flat_input_ids_p)
+			output_h = tf.gather(emb_table, flat_input_ids_h)
 
 		return output_p,output_h
 
