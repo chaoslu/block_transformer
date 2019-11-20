@@ -595,6 +595,8 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
 	if tokenizer.use_pretraining:
 		chars_a = tokenizer.tokenize(example.text_a)
 		chars_b = tokenizer.tokenize(example.text_b)
+		_truncate_seq(chars_a, max_seq_length)
+		_truncate_seq(chars_b, max_seq_length)
 		input_chars_ids_a = tokenizer.convert_tokens_to_chars_ids(chars_a)
 		input_chars_ids_b = tokenizer.convert_tokens_to_chars_ids(chars_b)
 
