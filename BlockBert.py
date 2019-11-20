@@ -670,8 +670,8 @@ def embedding_lookup(premise_input_ids,
 
 	output_p = tf.reshape(output_p, input_shape[0:-1] + [input_shape[-1] * token_embedding_size])
 	output_h = tf.reshape(output_h, input_shape[0:-1] + [input_shape[-1] * token_embedding_size])
-	output_p = tf.layers.dense(output_p,hidden_size,initializer=create_initializer(initializer_range))
-	output_h = tf.layers.dense(output_h,hidden_size,initializer=create_initializer(initializer_range))
+	output_p = tf.layers.dense(output_p,hidden_size,kernel_initializer=create_initializer(initializer_range))
+	output_h = tf.layers.dense(output_h,hidden_size,kernel_initializer=create_initializer(initializer_range))
 
 	return (output_p, output_h, embedding_table)
 
