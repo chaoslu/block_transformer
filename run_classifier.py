@@ -581,8 +581,8 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
 	for (i, label) in enumerate(label_list):
 		label_map[label] = i
 
-	tokens_a = tokenizer.tokenize(example.text_a)
-	tokens_b = tokenizer.tokenize(example.text_b)
+	tokens_a = tokenizer.tokenize(example.text_a,True)
+	tokens_b = tokenizer.tokenize(example.text_b,True)
 	_truncate_seq(tokens_a, max_seq_length)
 	_truncate_seq(tokens_b, max_seq_length)
 	
@@ -593,8 +593,8 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
 	input_chars_ids_b = [0] * max_seq_length
 
 	if tokenizer.use_pretraining:
-		chars_a = tokenizer.tokenize(example.text_a,True)
-		chars_b = tokenizer.tokenize(example.text_b,True)
+		chars_a = tokenizer.tokenize(example.text_a)
+		chars_b = tokenizer.tokenize(example.text_b)
 		input_chars_ids_a = tokenizer.convert_tokens_to_chars_ids(chars_a)
 		input_chars_ids_b = tokenizer.convert_tokens_to_chars_ids(chars_b)
 
