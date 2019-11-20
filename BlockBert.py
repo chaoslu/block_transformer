@@ -649,7 +649,7 @@ def embedding_lookup(premise_input_ids,
 		output_h = tf.concat([word_output_h, chars_output_h], axis=1)
 
 		the_shape = get_shape_list(word_output_p)
-		assert the_shape[1] == 30
+		assert the_shape[1] == 300
 
 		#enlarge embedding size for output reshape
 		token_embedding_size += chars_embedding_size
