@@ -616,8 +616,8 @@ def embedding_lookup(premise_input_ids,
 		if use_one_hot_embeddings:
 			one_hot_input_ids_p = tf.one_hot(ids_p, depth=vocab_size)
 			one_hot_input_ids_h = tf.one_hot(ids_h, depth=vocab_size)
-			output_p = tf.matmul(one_hot_input_ids_p, embedding_table)
-			output_h = tf.matmul(one_hot_input_ids_h, embedding_table)
+			output_p = tf.matmul(one_hot_input_ids_p, emb_table)
+			output_h = tf.matmul(one_hot_input_ids_h, emb_table)
 		else:
 			output_p = tf.gather(emb_table, flat_input_ids_p)
 			output_h = tf.gather(emb_table, flat_input_ids_h)
