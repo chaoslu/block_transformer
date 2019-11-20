@@ -1023,8 +1023,7 @@ def main(_):
 	label_list = processor.get_labels()
 
 	tokenizer = tokenization.FullTokenizer(vocab_file=FLAGS.vocab_file, chars_vocab_file=FLAGS.chars_embedding_file,
-										use_pretraining=FLAGS.use_pretraining, do_lower_case=FLAGS.do_lower_case,
-										introduce_unk=True)
+										use_pretraining=FLAGS.use_pretraining, do_lower_case=FLAGS.do_lower_case)
 
 	tpu_cluster_resolver = None
 	if FLAGS.use_tpu and FLAGS.tpu_name:
