@@ -201,13 +201,15 @@ class BlockBertModel(object):
 							input_tensor=self.premise_embedding_output,
 							position_embedding_name="position_embeddings",
 							initializer_range=config.initializer_range,
-							dropout_prob=config.hidden_dropout_prob)
+							dropout_prob=config.hidden_dropout_prob,
+							use_pretraining=use_pretraining)
 				with tf.variable_scope("hypothesis"):
 					self.hypothesis_embedding_output = embedding_position_processor(
 							input_tensor=self.hypothesis_embedding_output,
 							position_embedding_name="position_embeddings",
 							initializer_range=config.initializer_range,
-							dropout_prob=config.hidden_dropout_prob)
+							dropout_prob=config.hidden_dropout_prob,
+							use_pretraining=use_pretraining)
 
 			# This converts a 2D mask of shape [batch_size, seq_length] to a 3D
 			# mask of shape [batch_size, seq_length, seq_length] which is used
@@ -266,14 +268,16 @@ class BlockBertModel(object):
 							input_tensor=self.encoder_output_p,
 							position_embedding_name="position_embeddings",
 							initializer_range=config.initializer_range,
-							dropout_prob=config.hidden_dropout_prob)
+							dropout_prob=config.hidden_dropout_prob,
+							use_pretraining=use_pretraining)
 
 				with tf.variable_scope("hypothesis"):
 					self.interaction_input_h = embedding_position_processor(
 							input_tensor=self.encoder_output_h,
 							position_embedding_name="position_embeddings",
 							initializer_range=config.initializer_range,
-							dropout_prob=config.hidden_dropout_prob)
+							dropout_prob=config.hidden_dropout_prob,
+							use_pretraining=use_pretraining)
 
 				(self.all_interaction_layers_p, self.all_interaction_layers_h, self.inter_attention_scores_p,
 					self.inter_attention_scores_h) = interaction_transformer_model(
@@ -605,7 +609,6 @@ def embedding_lookup(premise_input_ids,
 				name=word_embedding_name,
 				shape=[vocab_size, token_embedding_size],
 				initializer=create_initializer(initializer_range))
-		embedding_table = tf.cast(embedding_table,tf.float64)
 
 
 	flat_input_ids_p = tf.reshape(premise_input_ids, [-1])
@@ -667,7 +670,8 @@ def embedding_lookup(premise_input_ids,
 def embedding_position_processor(input_tensor,
 							position_embedding_name="position_embeddings",
 							initializer_range=0.02,
-							dropout_prob=0.1):
+							dropout_prob=0.1,
+							use_pretraining=False):
 	"""Performs various post-processing on a word embedding tensor.
 
 	Args:
@@ -701,7 +705,8 @@ def embedding_position_processor(input_tensor,
 	width = input_shape[2]
 
 	position_embeddings = get_timing_signal_1d(seq_length, width)
-	position_embeddings = tf.cast(position_embeddings,tf.float64)
+	if use_pretraining:
+		position_embeddings = tf.cast(position_embeddings,tf.float64)
 	output = input_tensor + position_embeddings
 
 	output = layer_norm_and_dropout(output, dropout_prob)
