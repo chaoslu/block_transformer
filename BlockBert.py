@@ -645,14 +645,16 @@ def embedding_lookup(premise_input_ids,
 		chars_output_p,chars_output_h = transform_to_dense(flat_input_chars_ids_p,flat_input_chars_ids_h,
 										chars_embedding_table,chars_vocab_size,use_one_hot_embeddings)
 
+		the_shape = get_shape_list(chars_output_p)
+		assert the_shape[1] == chars_embedding_size
+
+
 
 		# concatenate word representation and character representation
 		output_p = tf.concat([word_output_p, chars_output_p], axis=1)
 		output_h = tf.concat([word_output_h, chars_output_h], axis=1)
 
-		the_shape = get_shape_list(output_p)
-		assert the_shape[1] == chars_embedding_size
-
+		
 		#enlarge embedding size for output reshape
 		token_embedding_size += chars_embedding_size
 	
