@@ -630,9 +630,6 @@ def embedding_lookup(premise_input_ids,
 	word_output_p,word_output_h = transform_to_dense(flat_input_ids_p,flat_input_ids_h,embedding_table,
 													vocab_size,use_one_hot_embeddings)
 
-	the_shape = get_shape_list(word_output_p)
-	assert the_shape[1] == word_embedding_size
-
 
 
 	if use_pretraining:
@@ -644,10 +641,6 @@ def embedding_lookup(premise_input_ids,
 		
 		chars_output_p,chars_output_h = transform_to_dense(flat_input_chars_ids_p,flat_input_chars_ids_h,
 										chars_embedding_table,chars_vocab_size,use_one_hot_embeddings)
-
-		the_shape = get_shape_list(chars_output_p)
-		assert the_shape[1] == chars_embedding_size
-
 
 
 		# concatenate word representation and character representation
