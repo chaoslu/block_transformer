@@ -606,7 +606,7 @@ def embedding_lookup(premise_input_ids,
 		
 		#tf.logging("The pretrained word embedding dimension: %s" %word_embedding_size)
 
-		#embedding_table = tf.constant(embedding_table)
+		embedding_table = tf.constant(embedding_table,tf.float32)
 		#embedding_table = tf.cast(embedding_table,tf.float32)	
 		
 		
