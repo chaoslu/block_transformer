@@ -320,6 +320,7 @@ class SnliProcessor(DataProcessor):
 
 	def get_train_examples(self, data_dir):
 		"""See base class."""
+		tf.logging.info(os.path.join(data_dir, "train.tsv"))
 		return self._create_examples(
 				self._read_tsv(os.path.join(data_dir, "train.tsv")))
 
