@@ -1042,7 +1042,7 @@ def attention_layer(from_tensor,
 	
 	if gaussian_prior_factor is not None:
 		distance_mask = create_distance_tensor(batch_size,from_seq_length,to_seq_length)
-		distance_mask = tf.math.abs(tf.multiply(distance_mask,gaussian_prior_factor) + gaussian_prior_bias) * -1.0
+		distance_mask = tf.math.abs(tf.multiply(distance_mask,gaussian_prior_factor) + prior_bias) * -1.0
 		distance_mask = tf.expand_dims(distance_mask, axis=[1])
 		attention_scores = attention_scores + distance_mask
 
@@ -1484,8 +1484,8 @@ def interaction_transformer_model(premise_input_tensor,
 								batch_size=batch_size,
 								from_seq_length=seq_length,
 								to_seq_length=seq_length,
-								gaussian_prior_factor=gaussian_prior_factor,
-								gaussian_prior_bias=gaussian_prior_bias)
+								gaussian_prior_factor=None,
+								gaussian_prior_bias=None)
 
 				with tf.variable_scope("hypothesis"):
 					(inter_attention_output_h,inter_attention_scores_h) = attention_sublayer(
@@ -1502,8 +1502,8 @@ def interaction_transformer_model(premise_input_tensor,
 								batch_size=batch_size,
 								from_seq_length=seq_length,
 								to_seq_length=seq_length,
-								gaussian_prior_factor=gaussian_prior_factor,
-								gaussian_prior_bias=gaussian_prior_bias)
+								gaussian_prior_factor=None,
+								gaussian_prior_bias=None)
 
 
 			# The activation is only applied to the "intermediate" hidden layer.
