@@ -1078,7 +1078,7 @@ def main(_):
 
 	if FLAGS.do_train:
 		train_file = os.path.join(FLAGS.output_dir, "train.tf_record")
-		if not os.path.exists(train_file):
+		if not tf.io.gfile.exists(train_file):
 			tf.logging.info("train_file_dir:%s", train_file)
 			file_based_convert_examples_to_features(
 					train_examples, label_list, FLAGS.max_seq_length, tokenizer, train_file)
