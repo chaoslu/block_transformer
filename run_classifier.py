@@ -1077,12 +1077,13 @@ def main(_):
 			predict_batch_size=FLAGS.predict_batch_size)
 
 	if FLAGS.do_train:
+		tf.logging.info("***** Running training *****")
+
 		train_file = os.path.join(FLAGS.output_dir, "train.tf_record")
 		if not tf.io.gfile.exists(train_file):
 			tf.logging.info("train_file_dir:%s", train_file)
 			file_based_convert_examples_to_features(
-					train_examples, label_list, FLAGS.max_seq_length, tokenizer, train_file)
-			tf.logging.info("***** Running training *****")
+					train_examples, label_list, FLAGS.max_seq_length, tokenizer, train_file)	
 			tf.logging.info("  Num examples = %d", len(train_examples))
 			tf.logging.info("  Batch size = %d", FLAGS.train_batch_size)
 			tf.logging.info("  Num steps = %d", num_train_steps)
